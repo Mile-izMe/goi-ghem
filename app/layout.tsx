@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { DemoAuthProvider } from "@/components/auth/demo-auth-provider";
+import { AuthProvider } from "@/features/auth/components/auth-provider";
 
 export const metadata: Metadata = {
   title: "Gói ghém — Sẵn sàng cho chuyến đi",
@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body>
-        <DemoAuthProvider>{children}</DemoAuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

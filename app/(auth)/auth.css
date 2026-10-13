@@ -129,28 +129,6 @@
   opacity: 0.6;
   cursor: wait;
 }
-.auth-demo-note {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  background: #edf0e7;
-  padding: 13px;
-  border-radius: 7px;
-  margin-top: 20px;
-  color: #7b886f;
-}
-.auth-demo-note svg {
-  flex: 0 0 auto;
-  margin-top: 2px;
-}
-.auth-demo-note p {
-  font-size: 10px;
-  line-height: 1.7;
-}
-.auth-demo-note strong {
-  font-weight: 600;
-  color: #596f4d;
-}
 .auth-switch {
   text-align: center;
   font-size: 12px;
@@ -199,4 +177,28 @@
   .auth-form-wrap {
     max-width: 440px;
   }
+}
+
+.auth-confirmation {
+  display: grid;
+  gap: 14px;
+  margin-top: 28px;
+  padding: 22px;
+  border: 1px solid #dce4d4;
+  border-radius: 12px;
+  background: #edf2e8;
+  color: #37583d;
+  overflow-wrap: anywhere;
+}
+.auth-confirmation h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+.auth-confirmation p {
+  font-size: 13px;
+  line-height: 1.8;
+}
+.auth-confirmation .button {
+  margin-top: 4px;
+  justify-content: center;
 }

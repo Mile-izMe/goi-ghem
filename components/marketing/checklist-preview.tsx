@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Icon } from "@/components/icon";
+
 const items = [
   { name: "Áo khoác ấm", quantity: 1 },
   { name: "Máy ảnh & pin dự phòng", quantity: 1 },
@@ -10,13 +11,14 @@ const items = [
 export function ChecklistPreview() {
   const [checked, setChecked] = useState([true, true, false, false]);
   const count = checked.filter(Boolean).length;
+
   return (
     <div className="landing-checklist">
       <div className="preview-top">
         <span>
           <Icon name="bag" size={16} /> HÀNH LÝ CỦA MÌNH
         </span>
-        <span>02N / 01Đ</span>
+        <span>2N-1Đ</span>
       </div>
       <h3>Cuối tuần, lên Đà Lạt.</h3>
       <p>Mang theo một chút, tận hưởng thật nhiều.</p>

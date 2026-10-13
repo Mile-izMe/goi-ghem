@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon, type IconName } from "@/components/icon";
-import { useDemoAuth } from "@/components/auth/demo-auth-provider";
+import { AccountMenu } from "@/features/auth/components/account-menu";
 import { useWorkspace } from "./workspace-provider";
 const links: { href: string; label: string; icon: IconName }[] = [
   { href: "/app/plans", label: "Kế hoạch của tôi", icon: "grid" },
@@ -18,7 +18,6 @@ export function Sidebar({
 }) {
   const pathname = usePathname();
 
-  const { user, signOut } = useDemoAuth();
   const { data, initialDate } = useWorkspace();
   const upcoming = data.plans
     .filter((plan) => plan.endDate >= initialDate)
@@ -86,26 +85,7 @@ export function Sidebar({
             </p>
             <span>Mỗi chuyến đi bắt đầu từ một chút gói ghém.</span>
           </div>
-          <div className="profile">
-            <span className="avatar">
-              {user?.name.charAt(0).toUpperCase() ?? "B"}
-            </span>
-            <div>
-              <strong title={user?.name}>
-                {user?.name ?? "Bạn đồng hành"}
-              </strong>
-              <span>Phiên trải nghiệm</span>
-            </div>
-            <button
-              className="logout-button"
-              onClick={() => {
-                signOut();
-
-              }}
-            >
-              Đăng xuất
-            </button>
-          </div>
+          <AccountMenu />
         </div>
       </aside>
     </>

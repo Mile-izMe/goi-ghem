@@ -1,4 +1,5 @@
 import { Icon, type IconName } from "@/components/icon";
+
 const features: {
   number: string;
   icon: IconName;

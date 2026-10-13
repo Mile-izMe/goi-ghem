@@ -1,6 +1,6 @@
 # Gói ghém
 
-Ứng dụng checklist chuyến đi bằng Next.js App Router, React và TypeScript. Hiện là bản demo giao diện: không gọi API, không xác thực tài khoản thật và chưa nối Supabase.
+Ứng dụng checklist chuyến đi bằng Next.js App Router, React và TypeScript. Đăng nhập/đăng ký sử dụng Supabase Auth; kế hoạch và checklist vẫn dùng dữ liệu mock cục bộ. Xem [hướng dẫn auth](features/auth/README.md) để cấu hình và đọc cấu trúc code.
 
 ## Chạy local
 
@@ -16,24 +16,22 @@ Mở địa chỉ Local trong terminal. Kiểm tra bằng `pnpm lint` và `pnpm 
 | URL                   | Nội dung                                           |
 | --------------------- | -------------------------------------------------- |
 | `/`                   | Landing giới thiệu và checklist minh họa tương tác |
-| `/register`           | Đăng ký demo, kiểm tra tên/email/mật khẩu xác nhận |
-| `/login`              | Đăng nhập demo                                     |
+| `/register`           | Đăng ký Supabase và xác nhận email                 |
+| `/login`              | Đăng nhập Supabase                                 |
 | `/app`                | Chuyển đến `/app/plans`                            |
 | `/app/plans`          | Tìm kiếm, lọc và tạo kế hoạch                      |
 | `/app/plans/[planId]` | Checklist, thông tin và tiến độ của một kế hoạch   |
 | `/app/items`          | Danh mục đồ dùng tái sử dụng                       |
 | `/app/templates`      | Chọn mẫu để tạo kế hoạch                           |
 
-Trang bên trong yêu cầu phiên demo. Mở đường dẫn trực tiếp khi chưa có phiên sẽ chuyển đến đăng nhập, rồi quay lại trang cần mở. Đăng xuất quay về landing. URL không có kế hoạch tương ứng hiển thị trạng thái trống và đường về danh sách.
+Trang bên trong yêu cầu phiên Supabase hợp lệ, được kiểm tra ở proxy và server layout. Mở đường dẫn trực tiếp khi chưa có phiên sẽ chuyển đến đăng nhập, rồi quay lại trang cần mở. Đăng xuất quay về landing. URL không có kế hoạch tương ứng hiển thị trạng thái trống và đường về danh sách.
 
-## Phạm vi demo
+## Dữ liệu hiện tại
 
-- Đăng nhập chấp nhận email hợp lệ và mật khẩu từ 8 ký tự; đăng ký thêm tên và xác nhận mật khẩu. Không gửi, lưu hay kiểm tra mật khẩu với dịch vụ nào.
-- `sessionStorage` chỉ giữ tên/email của phiên demo trong tab. Đây là điều hướng giao diện, **không phải bảo vệ dữ liệu hoặc xác thực thật**. Nếu trình duyệt chặn storage, phiên chỉ tồn tại trong bộ nhớ.
-- Các phiên demo cùng trình duyệt dùng chung bộ dữ liệu mẫu, không phân tách dữ liệu theo tài khoản.
-- Dữ liệu kế hoạch vẫn lưu ở `localStorage`, khóa `goi-ghem:planner:v1`. Đăng xuất không xóa checklist. Thay đổi đồng bộ giữa các tab qua sự kiện storage.
-- Giữ nguyên tiện ích Supabase sẵn có trong `utils/supabase`, chưa sử dụng trong luồng mới.
-- Model hiện tại vẫn là model mock gồm Plan, Item, PlanItem với `group` dạng chuỗi. Chưa chuyển sang schema database có PlanGroup/PlanVisited.
+- Đăng nhập/đăng ký/đăng xuất dùng Supabase Auth thật. Tên được lưu ở user metadata `full_name`.
+- Dữ liệu kế hoạch vẫn lưu ở `localStorage`, khóa `goi-ghem:planner:v1`, dùng chung giữa tài khoản trên cùng trình duyệt. Đăng xuất không xóa checklist.
+- Chưa kết nối CRUD vào database hoặc chuyển model mock sang PlanGroup/PlanVisited.
+- Cấu hình email, callback và cách kiểm tra: [features/auth/README.md](features/auth/README.md).
 
 ## Cấu trúc
 
@@ -44,7 +42,7 @@ app/
   app/                        # Layout workspace + các route chức năng
 components/
   marketing/                  # Header, hero, preview, features, CTA
-  auth/                       # Form, phiên demo, chặn truy cập giao diện
+  # Xác thực nằm ở features/auth: components, hooks, services, lib, server
   workspace/                  # Provider, sidebar, shell, chọn dialog
   plans/                      # Danh sách, card và hero kế hoạch
   checklist/                  # Chi tiết, nhóm đồ, tổng hợp tiến độ
@@ -63,7 +61,7 @@ Các page chỉ ghép component. Layout dùng chung giữ điều hướng và t
 
 ## Khi nối backend
 
-Thay provider phiên demo bằng xác thực thật và adapter localStorage bằng dữ liệu backend. Kiểm tra phiên/quyền ở server và RLS; client gate không thay thế kiểm soát quyền. Đặt các thao tác tạo kế hoạch kèm nhóm, nhân bản và thêm nhiều món trong giao dịch phù hợp. Không đưa khóa bí mật vào client.
+Thay adapter localStorage bằng dữ liệu backend. Kiểm tra phiên/quyền ở server và RLS; client gate không thay thế kiểm soát quyền. Đặt các thao tác tạo kế hoạch kèm nhóm, nhân bản và thêm nhiều món trong giao dịch phù hợp. Không đưa khóa bí mật vào client.
 
 ## Ảnh minh họa
 

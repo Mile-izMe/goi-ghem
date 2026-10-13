@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Icon } from "@/components/icon";
 import { ChecklistPreview } from "./checklist-preview";
@@ -28,7 +30,20 @@ export function Hero() {
           <Link href="/register" className="button primary">
             Gói ghém chuyến đầu tiên <Icon name="arrow-right" size={18} />
           </Link>
-          <a href="#features" className="hero-secondary">
+          <a
+            href="#features"
+            className="hero-secondary"
+            onClick={(e) => {
+              e.preventDefault();
+              const element = document.getElementById("features");
+              if (element) {
+                element.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }
+            }}
+          >
             Khám phá một chút <Icon name="chevron-down" size={16} />
           </a>
         </div>
