@@ -2,28 +2,30 @@
 import { Icon } from "@/components/icon";
 import { Progress } from "@/components/ui/progress";
 import { useWorkspace } from "@/components/workspace/workspace-provider";
-import { tripState } from "@/lib/planner/helpers";
+import { PlanWithProgress } from "@/features/plans/types";
 import {
-  getPlanProgress,
-  getDuration,
   formatCurrency,
   formatDateRange,
+  getDuration,
   type Plan,
 } from "@/lib/planner-data";
-export function PlanCard({ plan }: { plan: Plan }) {
-  const { data, initialDate, openPlan } = useWorkspace();
-  const count = getPlanProgress(plan.id, data.planItems);
+import { tripState } from "@/lib/planner/helpers";
+
+export function PlanCard({ plan }: { plan: PlanWithProgress }) {
+  const { initialDate, openPlan, plans, setPlans } = useWorkspace();
+  const count = plan.progress;
   const duration = getDuration(plan.startDate, plan.endDate);
+
   return (
     <article className="plan-card" key={plan.id}>
       <button
-        className={`plan-cover cover-${plan.cover}`}
+        className={`plan-cover cover-${plan.coverUrl}`}
         onClick={() => openPlan(plan.id)}
         aria-label={`Mở ${plan.name}`}
       >
         <span className="trip-state">
           <span />
-          {tripState(plan, initialDate)}
+          {tripState(plan.coverUrl, initialDate)}
         </span>
         <span className="cover-location">
           <Icon name="pin" size={15} />
@@ -47,14 +49,14 @@ export function PlanCard({ plan }: { plan: Plan }) {
           <span>Hành lý đã sẵn sàng</span>
           <strong>
             {count.checked}
-            <span> / {count.total}</span>
+            <span> / {count.target}</span>
           </strong>
         </div>
-        <Progress checked={count.checked} total={count.total} />
+        <Progress checked={count.checked} total={count.target} />
         <div className="card-footer">
           <span>
             <Icon name="wallet" size={15} />
-            {formatCurrency(plan.fee)}
+            {formatCurrency(plan.fee) || 0}
           </span>
           <button className="text-button" onClick={() => openPlan(plan.id)}>
             Mở checklist

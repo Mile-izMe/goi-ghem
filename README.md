@@ -28,7 +28,7 @@ Trang bên trong yêu cầu phiên Supabase hợp lệ, được kiểm tra ở 
 
 ## Dữ liệu hiện tại
 
-- Đăng nhập/đăng ký/đăng xuất dùng Supabase Auth thật. Tên được lưu ở user metadata `full_name`.
+- Đăng nhập/đăng ký/đăng xuất dùng Supabase Auth thật. Tên được gửi vào user metadata; áp dụng [migration profiles](supabase/README.md) để tự tạo profile khi đăng ký và bổ sung profile còn thiếu.
 - Dữ liệu kế hoạch vẫn lưu ở `localStorage`, khóa `goi-ghem:planner:v1`, dùng chung giữa tài khoản trên cùng trình duyệt. Đăng xuất không xóa checklist.
 - Chưa kết nối CRUD vào database hoặc chuyển model mock sang PlanGroup/PlanVisited.
 - Cấu hình email, callback và cách kiểm tra: [features/auth/README.md](features/auth/README.md).

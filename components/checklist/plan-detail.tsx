@@ -9,6 +9,8 @@ import { getPlanProgress } from "@/lib/planner-data";
 import { PlanHero } from "@/components/plans/plan-hero";
 import { ChecklistGroup } from "./checklist-group";
 import { PackingSummary } from "./packing-summary";
+import { PlanItemsPanel } from "@/features/plan-items/components/plan-items-panel";
+
 export function PlanDetail({ planId }: { planId: string }) {
   const { data, storageError, setModal, navigate, duplicate, itemName } =
     useWorkspace();
@@ -144,6 +146,7 @@ export function PlanDetail({ planId }: { planId: string }) {
         </section>
         <PackingSummary progress={progress} storageError={storageError} />
       </div>
+      <PlanItemsPanel planId={planId} key={planId} />
     </>
   );
 }

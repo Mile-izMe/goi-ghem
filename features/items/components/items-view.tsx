@@ -4,9 +4,19 @@ import { Icon } from "@/components/icon";
 import { useWorkspace } from "@/components/workspace/workspace-provider";
 import { Empty } from "@/components/ui/empty";
 import { normalized } from "@/lib/planner/helpers";
+
 export function ItemsView() {
-  const { data, setModal } = useWorkspace();
+  const { catalogItems, itemsLoading, itemsError, setModal } = useWorkspace();
   const [query, setQuery] = useState("");
+
+  if (itemsLoading) {
+    return <p role="status">Đang tải đồ dùng...</p>;
+  }
+
+  if (itemsError) {
+    return <p role="alert">{itemsError}</p>;
+  }
+
   return (
     <>
       <section className="page-heading">
@@ -26,7 +36,7 @@ export function ItemsView() {
         </button>
       </section>
       <div className="toolbar">
-        <span className="muted">{data.items.length} món trong danh mục</span>
+        <span className="muted">{catalogItems.length} món trong danh mục</span>
         <label className="search-field">
           <Icon name="search" size={18} />
           <input
@@ -43,10 +53,10 @@ export function ItemsView() {
           <span>ĐANG DÙNG TRONG</span>
           <span />
         </div>
-        {data.items
+        {catalogItems
           .filter((item) => normalized(item.name).includes(normalized(query)))
           .map((item) => {
-            const used = data.planItems.filter(
+            const used = catalogItems.filter(
               (row) => row.itemId === item.id,
             ).length;
             return (
@@ -69,7 +79,7 @@ export function ItemsView() {
             );
           })}
       </div>
-      {!data.items.some((item) =>
+      {!catalogItems.some((item) =>
         normalized(item.name).includes(normalized(query)),
       ) && (
         <Empty

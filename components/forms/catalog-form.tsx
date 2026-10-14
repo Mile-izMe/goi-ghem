@@ -1,16 +1,18 @@
 "use client";
-import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
+import { useState } from "react";
 export function CatalogForm({
   existingName,
   onClose,
   onSave,
 }: {
-  existingName: string;
+  existingName: string | null;
   onClose: () => void;
-  onSave: (name: string) => string | null;
+  onSave: (name: string) => Promise<string | null>;
 }) {
   const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
+
   return (
     <Dialog
       title={existingName ? "Đổi tên đồ dùng" : "Thêm đồ dùng mới"}
@@ -23,14 +25,30 @@ export function CatalogForm({
     >
       <form
         className="form"
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault();
+          if (pending) return;
+
           const name = String(
             new FormData(event.currentTarget).get("name"),
           ).trim();
-          if (!name) return setError("Tên món đồ không được để trống.");
-          const error = onSave(name);
-          if (error) setError(error);
+
+          if (!name) {
+            setError("Tên món đồ không được để trống.");
+            return;
+          }
+
+          setError("");
+          setPending(true);
+
+          try {
+            const message = await onSave(name);
+            if (message) setError(message);
+          } catch {
+            setError("Không thể tạo đồ dùng mới. Thử lại sau!");
+          } finally {
+            setPending(false);
+          }
         }}
       >
         <label>
@@ -53,8 +71,8 @@ export function CatalogForm({
           <button className="button secondary" type="button" onClick={onClose}>
             Hủy
           </button>
-          <button className="button primary" type="submit">
-            Lưu đồ dùng
+          <button className="button primary" type="submit" disabled={pending}>
+            {pending ? "Đang lưu..." : "Lưu đồ dùng"}
           </button>
         </div>
       </form>

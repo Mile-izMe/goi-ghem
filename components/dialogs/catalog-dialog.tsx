@@ -4,38 +4,42 @@ import {
   useWorkspace,
   type Modal,
 } from "@/components/workspace/workspace-provider";
-import { makeId } from "@/lib/planner-data";
+import { createItem, updateItem } from "@/features/items/item-service";
 import { normalized } from "@/lib/planner/helpers";
+
 export function CatalogDialog({
   modal,
 }: {
   modal: Extract<Modal, { kind: "catalog" }>;
 }) {
-  const { data, itemName, update, setModal, notify } = useWorkspace();
+  const { catalogItems, setCatalogItems, setModal, notify } = useWorkspace();
   return (
     <CatalogForm
-      existingName={modal.id ? itemName(modal.id) : ""}
+      existingName={
+        catalogItems.find((item) => item.id === modal.id)?.name || null
+      }
       onClose={() => setModal(null)}
-      onSave={(name) => {
+      onSave={async (name) => {
         if (
-          data.items.some(
+          catalogItems.some(
             (item) =>
               item.id !== modal.id &&
               normalized(item.name) === normalized(name),
           )
-        )
+        ) {
           return "Món đồ này đã có trong danh mục.";
-        update((previous) => ({
-          ...previous,
-          items: modal.id
-            ? previous.items.map((item) =>
-                item.id === modal.id ? { ...item, name } : item,
-              )
-            : [
-                ...previous.items,
-                { id: makeId("item"), userId: "demo-user", name },
-              ],
-        }));
+        }
+
+        const saved = modal.id
+          ? await updateItem(modal.id, { name })
+          : await createItem({ name });
+
+        setCatalogItems((prev) =>
+          modal.id
+            ? prev.map((item) => (item.id === saved.id ? saved : item))
+            : [saved, ...prev],
+        );
+
         setModal(null);
         notify("Đã cập nhật danh mục đồ dùng.");
         return null;

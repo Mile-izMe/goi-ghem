@@ -15,7 +15,8 @@ export async function register(input: RegisterInput, origin: string) {
     email: input.email.trim(),
     password: input.password,
     options: {
-      data: { full_name: input.fullName.trim() },
+      // DB trigger maps username to public.profiles, even before email confirmation.
+      data: { username: input.fullName.trim(), full_name: input.fullName.trim() },
       emailRedirectTo: new URL("/auth/callback", origin).href,
     },
   });

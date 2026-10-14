@@ -37,7 +37,8 @@ auth-gate.tsx            Trạng thái chờ phiên ở giao diện
 2. Trong Supabase Dashboard → Authentication, bật provider **Email** và cho phép đăng ký mới. Bật **Confirm email** nếu muốn yêu cầu xác nhận email.
 3. Trong **URL Configuration**, đặt **Site URL** là `http://localhost:3000`, thêm **Redirect URLs**: `http://localhost:3000/auth/callback`. Đổi port cho khớp server đang chạy. Khi deploy, thêm URL HTTPS tương ứng.
 4. Giữ link `{{ .ConfirmationURL }}` trong email template **Confirm signup** để dùng luồng PKCE tại `/auth/callback`. Link phải được mở ở cùng trình duyệt đã đăng ký. Nếu trước đó đã tùy chỉnh template theo token hash, `/auth/confirm?token_hash={{ .TokenHash }}&type=email` cũng được hỗ trợ (thêm domain của ứng dụng phía trước đường dẫn).
-5. Khởi động lại `pnpm dev` sau khi đổi biến môi trường.
+5. Áp dụng [migration tạo profiles](../../supabase/README.md) trong Supabase SQL Editor. SQL tạo trigger cho tài khoản mới và bổ sung profile còn thiếu cho tài khoản cũ.
+6. Khởi động lại `pnpm dev` sau khi đổi biến môi trường.
 
 ## Tự kiểm tra bằng tài khoản của bạn
 
@@ -53,7 +54,7 @@ Test logic cục bộ (Node 22.18+): `node --test tests/auth.test.mjs`. Build: `
 ## Phạm vi
 
 - Đây là xác thực thật bằng Supabase. Mật khẩu được gửi trực tiếp đến Supabase qua SDK; code ứng dụng không lưu mật khẩu vào storage.
-- `full_name` được lưu trong `auth.users.raw_user_meta_data`. Code này chưa insert vào `public.profiles`; nếu cần đồng bộ bảng đó, dùng trigger đã kiểm tra đúng schema/RLS của bạn.
+- Form gửi `username` và `full_name` trong user metadata. Sau khi áp dụng migration, trigger tự tạo `public.profiles(id, username, created_at)` cùng transaction đăng ký. Không cần insert từ trình duyệt; chưa triển khai đồng bộ tên hai chiều sau đăng ký.
 - Dữ liệu kế hoạch/checklist vẫn là mock trong `localStorage`, dùng chung giữa tài khoản trên cùng trình duyệt. Chưa đọc/ghi các bảng `plans`, `items`, `plan_items`, `plan_groups`.
 - Proxy và server layout kiểm tra phiên. Khi thêm API/Server Actions, từng thao tác cần kiểm tra quyền và RLS riêng; layout không thay thế việc đó.
 - Không có quên mật khẩu, đăng nhập mạng xã hội hay gửi lại email xác nhận trong lần triển khai này.

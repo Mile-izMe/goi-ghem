@@ -5,6 +5,7 @@ import { useWorkspace } from "@/components/workspace/workspace-provider";
 import { Empty } from "@/components/ui/empty";
 import { normalized, tripState } from "@/lib/planner/helpers";
 import { PlanCard } from "./plan-card";
+
 export function PlansView() {
   const { data, initialDate, setModal, openPlan } = useWorkspace();
   const [query, setQuery] = useState("");
@@ -19,6 +20,7 @@ export function PlansView() {
   const nextPlan = [...data.plans]
     .filter((plan) => plan.endDate >= initialDate)
     .sort((a, b) => a.startDate.localeCompare(b.startDate))[0];
+
   return (
     <>
       <section className="page-heading">
